@@ -13,15 +13,9 @@ if filereadable(expand("~/.vim/timvim/tim.vim"))
 endif
 </pre>
 ## Using my additions
-### Generate tags using ctags
-<pre>
-:MakeTags
-</pre>
-### Command to apply html template
-<pre>
-,temhtml
-</pre>
-### Command to apply python template
-<pre>
-,tempy
-</pre>
+
+Command | Description
+---|---
+:MakeTags | Generate tags using ctags
+,temhtml | Apply html template
+,tempy | Apply python template
