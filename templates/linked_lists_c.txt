@@ -1,0 +1,138 @@
+
+//mylinkedlist.h
+
+
+struct my_data
+{
+	char full_name[50];
+	int id;
+};
+
+struct my_list
+{
+//	struct my_list *head;
+	struct my_list *prev_node;
+	struct my_list *next_node;
+	struct my_data mydata;
+};
+
+int add_to_list(struct my_list *current_list,struct my_list *new_entry);
+int free_all(struct my_list *any_entry);
+int remove_n_from_list(struct my_list *entry_to_remove,int n);
+
+//mylinkedlist.c
+#include <stdio.h>
+#include "mylinkedlist.h"
+#include <stdlib.h>
+#include <string.h>
+
+/**
+ * Add to the end if the list
+ * current_list - any member of the list
+ * new_entry - data to enter. the pointers do not matter, it only copies the data
+ */
+int add_to_list(struct my_list *current_list,struct my_list *new_entry)
+{
+	//In case not at the end of the node. Move to the last node
+	while (!current_list->next_node==NULL)
+	{
+		current_list=current_list->next_node;
+	}
+
+	struct my_list *new_node=(struct my_list*)malloc(sizeof(struct my_list));
+	memset (new_node,0,sizeof(struct my_list));
+	current_list->next_node=new_node;
+	new_node->prev_node=current_list;
+	memcpy(&new_node->mydata,&new_entry->mydata,sizeof(struct my_data));
+	return 0;
+}
+
+
+
+/**
+ *  Remove node number n from the list.
+ *  To remove current node, in the list send address of the
+ * node to the function with n=0
+ */
+int remove_n_from_list(struct my_list *entry_to_remove,int n)
+{
+	int i;
+	for (i=0;i<n;i++)
+	{
+		if (entry_to_remove==NULL)
+			return -1;
+		entry_to_remove=entry_to_remove->next_node;
+	}
+
+	if (entry_to_remove->prev_node==NULL && entry_to_remove->next_node!=NULL)
+		entry_to_remove->next_node->prev_node=NULL;
+	else if (entry_to_remove->next_node==NULL && entry_to_remove->prev_node!=NULL)
+		entry_to_remove->prev_node->next_node=NULL;
+	else if (entry_to_remove->next_node!=NULL && entry_to_remove->prev_node!=NULL)
+	{
+		entry_to_remove->prev_node->next_node=entry_to_remove->next_node;
+		entry_to_remove->next_node->prev_node=entry_to_remove->prev_node;
+	}
+
+	free (entry_to_remove);
+	return 0;
+}
+
+/**
+ * Frees all of the memory of the linked list
+ */
+int free_all(struct my_list *any_entry)
+{
+	// get to the first node
+	while (!any_entry->prev_node==NULL)
+		any_entry=any_entry->prev_node;
+
+	// free nodes one by one
+	struct my_list *temp;
+	while (!any_entry==NULL)
+	{
+		temp=any_entry->next_node;
+		free(any_entry);
+		any_entry=temp;
+	}
+
+
+	return 0;
+}
+
+
+
+
+//main
+#include <stdio.h>
+#include <stdlib.h>
+#include "mylinkedlist.h"
+
+int main(void)
+{
+	puts("!!!Kick this into gear!!!");
+	struct my_list temp;
+	memcpy(temp.mydata.full_name,"tim g",sizeof(temp.mydata.full_name));
+	temp.mydata.id=1000;
+
+	// create the root or the first node
+	struct my_list root;
+	memset (&root,0,sizeof(struct my_list));
+
+	int i;
+	for (i=1;i<10;i++)
+	{
+		temp.mydata.id=i;
+		add_to_list(&root,&temp);
+	}
+
+	struct my_list *p;
+	p=&root;
+
+	remove_n_from_list(p,5);
+
+	free_all(&root);
+
+	return EXIT_SUCCESS;
+}
+
