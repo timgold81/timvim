@@ -19,3 +19,4 @@ Command | Description
 :MakeTags | Generate tags using ctags
 ,temhtml | Apply html template
 ,tempy | Apply python template
+,temllc | Apply c linked list template
